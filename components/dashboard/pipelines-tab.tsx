@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Search, ChevronDown, ChevronUp, Eye, Edit, Trash2, XCircle, ArrowLeft } from 'lucide-react';
+import { Search, ChevronDown, ChevronUp, Eye, Edit, Trash2, XCircle, ArrowLeft, CheckCircle2, Plus, Settings2, Terminal } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface PipelineAction {
   id: string;
@@ -78,165 +79,234 @@ export function PipelinesTab({ environmentId }: PipelinesTabProps) {
   const selectedPipeline = pipelines.find(p => p.id === selectedPipelineId);
 
   const SortIcon = () => (
-    <div className="flex flex-col ml-1">
-      <ChevronUp size={10} className="text-[#2fa4c7] -mb-[2px]" />
-      <ChevronDown size={10} className="text-[#2fa4c7]" />
+    <div className="flex flex-col ml-1.5 opacity-50 group-hover:opacity-100 transition-opacity">
+      <ChevronUp size={10} className="text-primary -mb-0.5" />
+      <ChevronDown size={10} className="text-primary" />
     </div>
+  );
+
+  // Detail row component for consistent spacing
+  const DetailRow = ({ 
+    label, 
+    children,
+    highlight = false
+  }: { 
+    label: string; 
+    children: React.ReactNode;
+    highlight?: boolean;
+  }) => (
+    <div className="grid grid-cols-[280px_1fr] gap-6 items-center py-3.5 border-b border-border/30 last:border-b-0">
+      <span className="text-sm text-muted-foreground">{label}</span>
+      <div className={cn(highlight && "font-semibold text-primary")}>{children}</div>
+    </div>
+  );
+
+  // Boolean indicator component
+  const BooleanIndicator = ({ value }: { value: boolean }) => (
+    value ? (
+      <CheckCircle2 size={18} className="text-emerald-500" />
+    ) : (
+      <XCircle size={18} className="text-destructive/70" />
+    )
   );
 
   if (selectedPipeline) {
     return (
       <div className="space-y-8 animate-in fade-in duration-300">
-        <div className="flex justify-between items-center mb-6 border-b border-[#dcecf1] pb-4">
-          <div className="flex items-center gap-3">
+        {/* Header */}
+        <div className="flex justify-between items-center pb-6 border-b border-border/50">
+          <div className="flex items-center gap-4">
             <button 
               onClick={() => setSelectedPipelineId(null)}
-              className="flex items-center justify-center p-2 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
+              className="flex items-center justify-center w-10 h-10 rounded-xl hover:bg-muted/50 text-muted-foreground hover:text-foreground transition-all duration-200"
             >
               <ArrowLeft size={20} />
             </button>
-            <h2 className="text-xl font-bold text-[#1f4a76]">
-              Environment Deployment Pipeline Details: {selectedPipeline.deploymentPipeline} Deployment Pipeline
-            </h2>
+            <div>
+              <h2 className="text-xl font-bold text-foreground tracking-tight">
+                Pipeline Details
+              </h2>
+              <p className="text-sm text-muted-foreground mt-0.5">
+                {selectedPipeline.deploymentPipeline} Deployment Pipeline
+              </p>
+            </div>
           </div>
-          <div className="flex gap-2">
-            <Button variant="outline" size="icon" className="border-[#dcecf1] text-[#2e5e7e] hover:bg-[#f0f8fa]">
-              <Trash2 size={16} />
+          <div className="flex gap-3">
+            <Button variant="outline" size="icon" className="w-10 h-10 rounded-lg border-border/60 hover:bg-destructive/10 hover:text-destructive hover:border-destructive/30 transition-all duration-200">
+              <Trash2 size={18} />
             </Button>
-            <Button size="icon" className="bg-[#ff6b2a] hover:bg-[#e95a1c] border-none text-white">
-              <Edit size={16} />
+            <Button size="icon" className="w-10 h-10 rounded-lg bg-primary hover:bg-primary/90 transition-all duration-200">
+              <Edit size={18} />
             </Button>
           </div>
         </div>
 
-        <div className="space-y-5 px-2">
-          {/* Info Rows */}
-          <div className="grid grid-cols-[250px_1fr] gap-4 items-center">
-            <span className="text-[13px] font-medium text-[#2e5e7e]">ID</span>
-            <span className="text-[13px] text-[#1f4a76]">{selectedPipeline.id}</span>
-          </div>
-
-          <div className="grid grid-cols-[250px_1fr] gap-4 items-center">
-            <span className="text-[13px] font-medium text-[#2e5e7e]">Notes</span>
-            <span className="text-[13px] text-[#1f4a76]">{selectedPipeline.notes}</span>
-          </div>
-
-          <div className="grid grid-cols-[250px_1fr] gap-4 items-center">
-            <span className="text-[13px] font-medium text-[#2e5e7e]">Environment</span>
-            <span className="text-[13px] font-bold text-[#ff6b2a]">{selectedPipeline.environment}</span>
-          </div>
-
-          <div className="grid grid-cols-[250px_1fr] gap-4 items-center">
-            <span className="text-[13px] font-medium text-[#2e5e7e]">Root Web Directory</span>
-            <span className="text-[13px] text-[#1f4a76]">{selectedPipeline.rootWebDirectory}</span>
-          </div>
-
-          <div className="grid grid-cols-[250px_1fr] gap-4 items-center">
-            <span className="text-[13px] font-medium text-[#2e5e7e]">Root Storage Directory</span>
-            <span className="text-[13px] text-[#1f4a76]">{selectedPipeline.rootStorageDirectory}</span>
-          </div>
-
-          <div className="grid grid-cols-[250px_1fr] gap-4 items-center">
-            <span className="text-[13px] font-medium text-[#2e5e7e]">Turn Nginx Container Off</span>
-            {!selectedPipeline.turnNginxContainerOff && (
-              <XCircle size={16} className="text-red-500" />
-            )}
-          </div>
-
-          <div className="grid grid-cols-[250px_1fr] gap-4 items-center">
-            <span className="text-[13px] font-medium text-[#2e5e7e]">Enable Redis prefix change during build</span>
-            {!selectedPipeline.enableRedisPrefixChange && (
-              <XCircle size={16} className="text-red-500" />
-            )}
-          </div>
-
-          <div className="grid grid-cols-[250px_1fr] gap-4 items-center">
-            <span className="text-[13px] font-medium text-[#2e5e7e]">Deployment Pipeline</span>
-            <span className="text-[13px] font-bold text-[#ff6b2a]">{selectedPipeline.deploymentPipeline}</span>
-          </div>
-
-          <div className="grid grid-cols-[250px_1fr] gap-4 items-center">
-            <span className="text-[13px] font-medium text-[#2e5e7e]">Tag</span>
-            <span className="text-[13px] text-[#1f4a76]">{selectedPipeline.tag}</span>
-          </div>
-
-          <div className="grid grid-cols-[250px_1fr] gap-4 items-center">
-            <span className="text-[13px] font-medium text-[#2e5e7e]">Use Custom Build Commands</span>
-            <span className="text-[13px] text-[#1f4a76]">{selectedPipeline.useCustomBuildCommands ? 'Yes' : 'No'}</span>
-          </div>
-
-          <div className="grid grid-cols-[250px_1fr] gap-4 items-start pt-2">
-            <span className="text-[13px] font-medium text-[#2e5e7e] mt-2">Custom Build Commands</span>
-            <div className="bg-[#1e293b] rounded-lg p-4 font-mono text-[13px] text-gray-300 overflow-x-auto shadow-sm border border-border/50">
-              <pre className="leading-relaxed">
-                {selectedPipeline.customBuildCommands?.split('\n').map((line, i) => (
-                  <div key={i} className="flex">
-                    <span className="text-gray-500 mr-4 select-none w-4 text-right">{i + 1}</span>
-                    <span>{line}</span>
-                  </div>
-                ))}
-              </pre>
+        {/* Pipeline Details Card */}
+        <div className="bg-card/50 dark:bg-card/30 backdrop-blur-sm border border-border/50 rounded-xl p-6 space-y-1">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+              <Settings2 size={20} className="text-primary" />
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-foreground">Configuration</h3>
+              <p className="text-sm text-muted-foreground">Pipeline settings and parameters</p>
             </div>
           </div>
 
-          <div className="grid grid-cols-[250px_1fr] gap-4 items-center pt-2">
-            <span className="text-[13px] font-medium text-[#2e5e7e]">Use Custom Database Commands</span>
-            <span className="text-[13px] text-[#1f4a76]">{selectedPipeline.useCustomDatabaseCommands ? 'Yes' : 'No'}</span>
-          </div>
+          <DetailRow label="ID">
+            <span className="text-sm font-mono text-foreground bg-muted/50 px-2.5 py-1 rounded-md">{selectedPipeline.id}</span>
+          </DetailRow>
 
-          <div className="grid grid-cols-[250px_1fr] gap-4 items-center">
-            <span className="text-[13px] font-medium text-[#2e5e7e]">Use Custom Post Build Commands</span>
-            <span className="text-[13px] text-[#1f4a76]">{selectedPipeline.useCustomPostBuildCommands ? 'Yes' : 'No'}</span>
-          </div>
+          <DetailRow label="Notes">
+            <span className="text-sm text-foreground/80">{selectedPipeline.notes}</span>
+          </DetailRow>
 
-          <div className="grid grid-cols-[250px_1fr] gap-4 items-start pt-2">
-            <span className="text-[13px] font-medium text-[#2e5e7e] mt-2">Custom Post Build Commands</span>
-            <div className="bg-[#1e293b] rounded-lg p-4 font-mono text-[13px] text-gray-300 overflow-x-auto shadow-sm border border-border/50">
-              <pre className="leading-relaxed">
-                {selectedPipeline.customPostBuildCommands?.split('\n').map((line, i) => (
-                  <div key={i} className="flex">
-                    <span className="text-gray-500 mr-4 select-none w-4 text-right">{i + 1}</span>
-                    <span>{line}</span>
-                  </div>
-                ))}
-              </pre>
+          <DetailRow label="Environment" highlight>
+            <span className="text-sm px-3 py-1 rounded-full bg-primary/10 text-primary font-semibold">
+              {selectedPipeline.environment}
+            </span>
+          </DetailRow>
+
+          <DetailRow label="Root Web Directory">
+            <span className="text-sm font-mono text-foreground/80 bg-muted/30 px-3 py-1.5 rounded-md">{selectedPipeline.rootWebDirectory}</span>
+          </DetailRow>
+
+          <DetailRow label="Root Storage Directory">
+            <span className="text-sm font-mono text-foreground/80 bg-muted/30 px-3 py-1.5 rounded-md">{selectedPipeline.rootStorageDirectory}</span>
+          </DetailRow>
+
+          <DetailRow label="Turn Nginx Container Off">
+            <BooleanIndicator value={selectedPipeline.turnNginxContainerOff} />
+          </DetailRow>
+
+          <DetailRow label="Enable Redis prefix change during build">
+            <BooleanIndicator value={selectedPipeline.enableRedisPrefixChange} />
+          </DetailRow>
+
+          <DetailRow label="Deployment Pipeline" highlight>
+            <span className="text-sm px-3 py-1 rounded-full bg-primary/10 text-primary font-semibold">
+              {selectedPipeline.deploymentPipeline}
+            </span>
+          </DetailRow>
+
+          <DetailRow label="Tag">
+            <span className="text-sm text-muted-foreground">{selectedPipeline.tag}</span>
+          </DetailRow>
+
+          <DetailRow label="Use Custom Build Commands">
+            <span className={cn(
+              "text-sm font-medium",
+              selectedPipeline.useCustomBuildCommands ? "text-emerald-500" : "text-muted-foreground"
+            )}>
+              {selectedPipeline.useCustomBuildCommands ? 'Yes' : 'No'}
+            </span>
+          </DetailRow>
+
+          {selectedPipeline.customBuildCommands && (
+            <div className="py-4 border-b border-border/30">
+              <div className="flex items-center gap-2 mb-3">
+                <Terminal size={16} className="text-primary" />
+                <span className="text-sm font-medium text-foreground">Custom Build Commands</span>
+              </div>
+              <div className="bg-[#0d1117] dark:bg-[#0d1117] rounded-xl p-5 font-mono text-sm text-slate-300 overflow-x-auto border border-border/30">
+                <pre className="leading-relaxed">
+                  {selectedPipeline.customBuildCommands?.split('\n').map((line, i) => (
+                    <div key={i} className="flex hover:bg-white/5 -mx-2 px-2 rounded transition-colors">
+                      <span className="text-slate-500 mr-6 select-none w-5 text-right tabular-nums">{i + 1}</span>
+                      <span className="text-emerald-400">{line}</span>
+                    </div>
+                  ))}
+                </pre>
+              </div>
             </div>
-          </div>
+          )}
 
-          <div className="grid grid-cols-[250px_1fr] gap-4 items-center pt-2">
-            <span className="text-[13px] font-medium text-[#2e5e7e]">Reload additional deployments</span>
-            <span className="text-[13px] text-[#1f4a76]">{selectedPipeline.reloadAdditionalDeployments ? 'Yes' : 'No'}</span>
-          </div>
+          <DetailRow label="Use Custom Database Commands">
+            <span className={cn(
+              "text-sm font-medium",
+              selectedPipeline.useCustomDatabaseCommands ? "text-emerald-500" : "text-muted-foreground"
+            )}>
+              {selectedPipeline.useCustomDatabaseCommands ? 'Yes' : 'No'}
+            </span>
+          </DetailRow>
+
+          <DetailRow label="Use Custom Post Build Commands">
+            <span className={cn(
+              "text-sm font-medium",
+              selectedPipeline.useCustomPostBuildCommands ? "text-emerald-500" : "text-muted-foreground"
+            )}>
+              {selectedPipeline.useCustomPostBuildCommands ? 'Yes' : 'No'}
+            </span>
+          </DetailRow>
+
+          {selectedPipeline.customPostBuildCommands && (
+            <div className="py-4 border-b border-border/30">
+              <div className="flex items-center gap-2 mb-3">
+                <Terminal size={16} className="text-primary" />
+                <span className="text-sm font-medium text-foreground">Custom Post Build Commands</span>
+              </div>
+              <div className="bg-[#0d1117] dark:bg-[#0d1117] rounded-xl p-5 font-mono text-sm text-slate-300 overflow-x-auto border border-border/30">
+                <pre className="leading-relaxed">
+                  {selectedPipeline.customPostBuildCommands?.split('\n').map((line, i) => (
+                    <div key={i} className="flex hover:bg-white/5 -mx-2 px-2 rounded transition-colors">
+                      <span className="text-slate-500 mr-6 select-none w-5 text-right tabular-nums">{i + 1}</span>
+                      <span className="text-emerald-400">{line}</span>
+                    </div>
+                  ))}
+                </pre>
+              </div>
+            </div>
+          )}
+
+          <DetailRow label="Reload additional deployments">
+            <span className={cn(
+              "text-sm font-medium",
+              selectedPipeline.reloadAdditionalDeployments ? "text-emerald-500" : "text-muted-foreground"
+            )}>
+              {selectedPipeline.reloadAdditionalDeployments ? 'Yes' : 'No'}
+            </span>
+          </DetailRow>
         </div>
 
         {/* Actions Section */}
-        <div className="mt-12">
-          <h3 className="text-lg font-bold text-[#2fa4c7] mb-4 border-b border-[#dcecf1] pb-2">Actions</h3>
+        <div className="space-y-4">
+          <div className="flex items-center gap-3">
+            <h3 className="text-lg font-semibold text-foreground tracking-tight">Actions History</h3>
+            <span className="text-xs font-medium text-muted-foreground bg-muted/50 px-2.5 py-1 rounded-full">
+              {selectedPipeline.actions?.length || 0} entries
+            </span>
+          </div>
           
-          <div className="bg-white border-y border-[#dcecf1]">
-            <table className="w-full text-xs">
-              <thead className="bg-[#f0f8fa]">
+          <div className="bg-card dark:bg-card/50 border border-border/50 rounded-xl overflow-hidden">
+            <table className="w-full text-sm">
+              <thead className="bg-muted/30 dark:bg-muted/10 border-b border-border/50">
                 <tr>
-                  <th className="px-4 py-3 text-left font-bold text-[#1f4a76] uppercase tracking-wider">ID</th>
-                  <th className="px-4 py-3 text-left font-bold text-[#1f4a76] uppercase tracking-wider">Name</th>
-                  <th className="px-4 py-3 text-left font-bold text-[#1f4a76] uppercase tracking-wider">Initiated By</th>
-                  <th className="px-4 py-3 text-left font-bold text-[#1f4a76] uppercase tracking-wider">Target</th>
-                  <th className="px-4 py-3 text-left font-bold text-[#1f4a76] uppercase tracking-wider">Status</th>
-                  <th className="px-4 py-3 text-left font-bold text-[#1f4a76] uppercase tracking-wider">Happened At</th>
-                  <th className="px-4 py-3 text-right"></th>
+                  <th className="px-5 py-4 text-left font-semibold text-muted-foreground uppercase tracking-wider text-xs">ID</th>
+                  <th className="px-5 py-4 text-left font-semibold text-muted-foreground uppercase tracking-wider text-xs">Name</th>
+                  <th className="px-5 py-4 text-left font-semibold text-muted-foreground uppercase tracking-wider text-xs">Initiated By</th>
+                  <th className="px-5 py-4 text-left font-semibold text-muted-foreground uppercase tracking-wider text-xs">Target</th>
+                  <th className="px-5 py-4 text-left font-semibold text-muted-foreground uppercase tracking-wider text-xs">Status</th>
+                  <th className="px-5 py-4 text-left font-semibold text-muted-foreground uppercase tracking-wider text-xs">Happened At</th>
+                  <th className="px-5 py-4 w-12"></th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#dcecf1]">
+              <tbody className="divide-y divide-border/30">
                 {selectedPipeline.actions?.map((action) => (
-                  <tr key={action.id} className="hover:bg-[#f0f8fa]/50 transition-colors">
-                    <td className="px-4 py-4 font-bold text-[#1f4a76]">{action.id}</td>
-                    <td className="px-4 py-4 text-[#5da2c3]">{action.name}</td>
-                    <td className="px-4 py-4 text-[#5da2c3]">{action.initiatedBy}</td>
-                    <td className="px-4 py-4 text-[#5da2c3]">{action.target}</td>
-                    <td className="px-4 py-4 text-[#5da2c3]">{action.status}</td>
-                    <td className="px-4 py-4 text-[#5da2c3]">{action.happenedAt}</td>
-                    <td className="px-4 py-4 text-right">
-                      <Eye size={16} className="inline-block cursor-pointer text-[#2fa4c7] hover:text-[#1f4a76] transition-colors" />
+                  <tr key={action.id} className="hover:bg-muted/20 dark:hover:bg-muted/10 transition-colors">
+                    <td className="px-5 py-4 font-semibold text-foreground font-mono">{action.id}</td>
+                    <td className="px-5 py-4 text-foreground/80">{action.name}</td>
+                    <td className="px-5 py-4 text-foreground/80">{action.initiatedBy}</td>
+                    <td className="px-5 py-4 text-muted-foreground">{action.target}</td>
+                    <td className="px-5 py-4">
+                      <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-500">
+                        {action.status}
+                      </span>
+                    </td>
+                    <td className="px-5 py-4 text-muted-foreground text-sm">{action.happenedAt}</td>
+                    <td className="px-5 py-4">
+                      <button className="p-2 rounded-lg hover:bg-muted/50 text-primary transition-colors">
+                        <Eye size={16} />
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -244,10 +314,10 @@ export function PipelinesTab({ environmentId }: PipelinesTabProps) {
             </table>
           </div>
           
-          <div className="flex items-center justify-between text-xs text-[#ff6b2a] px-2 pt-3 font-medium">
-            <span className="cursor-pointer hover:text-[#e95a1c]">Previous</span>
-            <span className="text-[#5da2c3]">1-5 of 9</span>
-            <span className="cursor-pointer hover:text-[#e95a1c]">Next</span>
+          <div className="flex items-center justify-between text-sm px-1 pt-2">
+            <button className="font-medium text-primary hover:text-primary/80 transition-colors">Previous</button>
+            <span className="text-muted-foreground">1-5 of 9</span>
+            <button className="font-medium text-primary hover:text-primary/80 transition-colors">Next</button>
           </div>
         </div>
       </div>
@@ -256,140 +326,197 @@ export function PipelinesTab({ environmentId }: PipelinesTabProps) {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center mb-6">
+      {/* Header */}
+      <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-[28px] font-bold text-[#1f4a76]">Pipelines</h2>
+          <h2 className="text-2xl font-bold text-foreground tracking-tight">Pipelines</h2>
+          <p className="text-sm text-muted-foreground mt-1">Manage deployment pipeline configurations</p>
         </div>
       </div>
 
       {/* Action Toolbar */}
-      <div className="relative mb-2">
-        <div className="flex justify-between items-start mb-4">
-          <div className="relative w-80">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#2fa4c7]" size={18} />
-            <Input 
-              placeholder="Search" 
-              className="pl-10 py-5 bg-white border-[#dcecf1] rounded-full text-sm shadow-sm placeholder:text-muted-foreground/60 focus-visible:ring-[#2fa4c7]"
-            />
-          </div>
-          
-          <div className="flex flex-col items-end gap-3">
-            <Button
-              className="bg-[#ff6b2a] hover:bg-[#e95a1c] text-white font-medium border-none px-5 rounded"
-            >
-              Create Environment Deployment Pipeline
-            </Button>
-          </div>
+      <div className="flex justify-between items-center gap-4">
+        <div className="relative w-80">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
+          <Input 
+            placeholder="Search pipelines..." 
+            className="pl-11 py-5 bg-card dark:bg-card/50 border-border/60 rounded-xl text-sm focus:ring-2 focus:ring-primary/20"
+          />
         </div>
-
-        <div className="flex items-center gap-2 mb-2 ml-4">
-          <input type="checkbox" className="w-[18px] h-[18px] rounded border-[#2fa4c7] text-[#2fa4c7] focus:ring-[#2fa4c7]" />
-          <ChevronDown size={18} className="text-[#1f4a76] cursor-pointer" />
-        </div>
+        
+        <Button className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm px-5 rounded-lg font-medium">
+          <Plus size={18} className="mr-2" />
+          Create Environment Deployment Pipeline
+        </Button>
       </div>
 
-      <div className="bg-card border border-[#dcecf1] rounded-lg overflow-hidden shadow-card mt-2">
+      {/* Table */}
+      <div className="bg-card dark:bg-card/50 border border-border/50 rounded-xl overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
-          <table className="w-full text-[11px] whitespace-nowrap">
-            <thead className="bg-[#f0f8fa] border-b border-[#dcecf1]">
+          <table className="w-full text-sm whitespace-nowrap">
+            <thead className="bg-muted/30 dark:bg-muted/10 border-b border-border/50">
               <tr>
-                <th className="px-4 py-4 text-center font-bold text-[#1f4a76] uppercase tracking-wider w-10">
-                  <input type="checkbox" className="w-[18px] h-[18px] rounded border-[#2fa4c7]" />
+                <th className="px-5 py-4 text-center w-12">
+                  <input type="checkbox" className="w-4 h-4 rounded border-border accent-primary" />
                 </th>
-                <th className="px-4 py-4 text-left font-bold text-[#1f4a76] uppercase tracking-wider">
-                  <div className="flex items-center justify-start cursor-pointer">ID <SortIcon /></div>
+                <th className="px-5 py-4 text-left">
+                  <div className="flex items-center cursor-pointer group font-semibold text-muted-foreground uppercase tracking-wider text-xs">
+                    ID <SortIcon />
+                  </div>
                 </th>
-                <th className="px-4 py-4 text-left font-bold text-[#1f4a76] uppercase tracking-wider min-w-[200px]">
-                  <div className="flex items-center justify-start cursor-pointer">NOTES <SortIcon /></div>
+                <th className="px-5 py-4 text-left min-w-[200px]">
+                  <div className="flex items-center cursor-pointer group font-semibold text-muted-foreground uppercase tracking-wider text-xs">
+                    Notes <SortIcon />
+                  </div>
                 </th>
-                <th className="px-4 py-4 text-left font-bold text-[#1f4a76] uppercase tracking-wider">
-                  <div className="flex items-center justify-start cursor-pointer">ENVIRONMENT <SortIcon /></div>
+                <th className="px-5 py-4 text-left">
+                  <div className="flex items-center cursor-pointer group font-semibold text-muted-foreground uppercase tracking-wider text-xs">
+                    Environment <SortIcon />
+                  </div>
                 </th>
-                <th className="px-4 py-4 text-left font-bold text-[#1f4a76] uppercase tracking-wider">
-                  <div className="flex items-center justify-start cursor-pointer">ROOT WEB DIRECTORY <SortIcon /></div>
+                <th className="px-5 py-4 text-left">
+                  <div className="flex items-center cursor-pointer group font-semibold text-muted-foreground uppercase tracking-wider text-xs">
+                    Root Web Dir <SortIcon />
+                  </div>
                 </th>
-                <th className="px-4 py-4 text-left font-bold text-[#1f4a76] uppercase tracking-wider">
-                  <div className="flex items-center justify-start cursor-pointer">ROOT STORAGE DIRECTORY <SortIcon /></div>
+                <th className="px-5 py-4 text-left">
+                  <div className="flex items-center cursor-pointer group font-semibold text-muted-foreground uppercase tracking-wider text-xs">
+                    Root Storage Dir <SortIcon />
+                  </div>
                 </th>
-                <th className="px-4 py-4 text-center font-bold text-[#1f4a76] uppercase tracking-wider max-w-[80px] whitespace-normal leading-tight">
-                  <div className="flex items-center justify-center">TURN NGINX CONTAINER OFF</div>
+                <th className="px-5 py-4 text-center max-w-[80px]">
+                  <div className="font-semibold text-muted-foreground uppercase tracking-wider text-xs whitespace-normal leading-tight">
+                    Nginx Off
+                  </div>
                 </th>
-                <th className="px-4 py-4 text-center font-bold text-[#1f4a76] uppercase tracking-wider max-w-[90px] whitespace-normal leading-tight">
-                  <div className="flex items-center justify-center">ENABLE REDIS PREFIX CHANGE DURING BUILD</div>
+                <th className="px-5 py-4 text-center max-w-[90px]">
+                  <div className="font-semibold text-muted-foreground uppercase tracking-wider text-xs whitespace-normal leading-tight">
+                    Redis Prefix
+                  </div>
                 </th>
-                <th className="px-4 py-4 text-left font-bold text-[#1f4a76] uppercase tracking-wider">
-                  <div className="flex items-center justify-start cursor-pointer">DEPLOYMENT PIPELINE <SortIcon /></div>
+                <th className="px-5 py-4 text-left">
+                  <div className="flex items-center cursor-pointer group font-semibold text-muted-foreground uppercase tracking-wider text-xs">
+                    Pipeline <SortIcon />
+                  </div>
                 </th>
-                <th className="px-4 py-4 text-center font-bold text-[#1f4a76] uppercase tracking-wider max-w-[100px] whitespace-normal leading-tight">
-                  <div className="flex items-center justify-center cursor-pointer">ENABLE MAINTENANCE MODE DURING DATABASE COMMANDS</div>
+                <th className="px-5 py-4 text-center max-w-[100px]">
+                  <div className="font-semibold text-muted-foreground uppercase tracking-wider text-xs whitespace-normal leading-tight">
+                    Maintenance Mode
+                  </div>
                 </th>
-                <th className="px-4 py-4 text-center font-bold text-[#1f4a76] uppercase tracking-wider">TAG</th>
-                <th className="px-4 py-4 text-center font-bold text-[#1f4a76] uppercase tracking-wider max-w-[80px] whitespace-normal leading-tight">USE CUSTOM BUILD COMMANDS</th>
-                <th className="px-4 py-4 text-center font-bold text-[#1f4a76] uppercase tracking-wider max-w-[80px] whitespace-normal leading-tight">USE CUSTOM DATABASE COMMANDS</th>
-                <th className="px-4 py-4 text-center font-bold text-[#1f4a76] uppercase tracking-wider max-w-[80px] whitespace-normal leading-tight">USE CUSTOM POST BUILD COMMANDS</th>
-                <th className="px-4 py-4 text-center font-bold text-[#1f4a76] uppercase tracking-wider max-w-[80px] whitespace-normal leading-tight">RELOAD ADDITIONAL DEPLOYMENTS</th>
-                <th className="px-4 py-4"></th> {/* Actions */}
+                <th className="px-5 py-4 text-center font-semibold text-muted-foreground uppercase tracking-wider text-xs">Tag</th>
+                <th className="px-5 py-4 text-center max-w-[80px]">
+                  <div className="font-semibold text-muted-foreground uppercase tracking-wider text-xs whitespace-normal leading-tight">
+                    Custom Build
+                  </div>
+                </th>
+                <th className="px-5 py-4 text-center max-w-[80px]">
+                  <div className="font-semibold text-muted-foreground uppercase tracking-wider text-xs whitespace-normal leading-tight">
+                    Custom DB
+                  </div>
+                </th>
+                <th className="px-5 py-4 text-center max-w-[80px]">
+                  <div className="font-semibold text-muted-foreground uppercase tracking-wider text-xs whitespace-normal leading-tight">
+                    Post Build
+                  </div>
+                </th>
+                <th className="px-5 py-4 text-center max-w-[80px]">
+                  <div className="font-semibold text-muted-foreground uppercase tracking-wider text-xs whitespace-normal leading-tight">
+                    Reload Deps
+                  </div>
+                </th>
+                <th className="px-5 py-4 w-28"></th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#dcecf1]">
+            <tbody className="divide-y divide-border/30">
               {pipelines.map((pipeline) => (
-                <tr key={pipeline.id} className="hover:bg-[#f0f8fa]/50 transition-colors">
-                  <td className="px-4 py-5 text-center">
-                    <input type="checkbox" className="w-[18px] h-[18px] rounded border-[#2fa4c7]" />
+                <tr key={pipeline.id} className="hover:bg-muted/20 dark:hover:bg-muted/10 transition-colors">
+                  <td className="px-5 py-4 text-center">
+                    <input type="checkbox" className="w-4 h-4 rounded border-border accent-primary" />
                   </td>
-                  <td className="px-4 py-5 text-left font-bold text-[#1f4a76] cursor-pointer hover:underline" onClick={() => setSelectedPipelineId(pipeline.id)}>
-                    {pipeline.id}
+                  <td className="px-5 py-4">
+                    <button 
+                      onClick={() => setSelectedPipelineId(pipeline.id)}
+                      className="font-semibold text-primary hover:text-primary/80 hover:underline transition-colors"
+                    >
+                      {pipeline.id}
+                    </button>
                   </td>
-                  <td className="px-4 py-5 text-left text-muted-foreground whitespace-normal min-w-[200px]">
-                    {pipeline.notes}
+                  <td className="px-5 py-4 text-foreground/70 whitespace-normal min-w-[200px] max-w-[300px]">
+                    <span className="line-clamp-2">{pipeline.notes}</span>
                   </td>
-                  <td className="px-4 py-5 text-left font-bold text-[#1f4a76]">
-                    {pipeline.environment}
+                  <td className="px-5 py-4">
+                    <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-primary/10 text-primary">
+                      {pipeline.environment}
+                    </span>
                   </td>
-                  <td className="px-4 py-5 text-left text-[#5da2c3]">
-                    {pipeline.rootWebDirectory}
+                  <td className="px-5 py-4">
+                    <span className="text-foreground/70 font-mono text-xs">{pipeline.rootWebDirectory}</span>
                   </td>
-                  <td className="px-4 py-5 text-left text-[#5da2c3]">
-                    {pipeline.rootStorageDirectory}
+                  <td className="px-5 py-4">
+                    <span className="text-foreground/70 font-mono text-xs">{pipeline.rootStorageDirectory}</span>
                   </td>
-                  <td className="px-4 py-5 text-center">
-                    {!pipeline.turnNginxContainerOff && (
-                      <XCircle size={16} className="text-red-500 mx-auto" />
-                    )}
+                  <td className="px-5 py-4 text-center">
+                    <BooleanIndicator value={pipeline.turnNginxContainerOff} />
                   </td>
-                  <td className="px-4 py-5 text-center">
-                    {!pipeline.enableRedisPrefixChange && (
-                      <XCircle size={16} className="text-red-500 mx-auto" />
-                    )}
+                  <td className="px-5 py-4 text-center">
+                    <BooleanIndicator value={pipeline.enableRedisPrefixChange} />
                   </td>
-                  <td className="px-4 py-5 text-left font-bold text-[#1f4a76]">
-                    {pipeline.deploymentPipeline}
+                  <td className="px-5 py-4">
+                    <span className="font-semibold text-foreground">{pipeline.deploymentPipeline}</span>
                   </td>
-                  <td className="px-4 py-5 text-center">
-                    {!pipeline.enableMaintenanceModeDb && (
-                      <XCircle size={16} className="text-red-500 mx-auto" />
-                    )}
+                  <td className="px-5 py-4 text-center">
+                    <BooleanIndicator value={pipeline.enableMaintenanceModeDb} />
                   </td>
-                  <td className="px-4 py-5 text-center text-[#5da2c3]">
+                  <td className="px-5 py-4 text-center text-muted-foreground">
                     {pipeline.tag}
                   </td>
-                  <td className="px-4 py-5 text-center text-[#5da2c3]">
-                    {pipeline.useCustomBuildCommands ? 'Yes' : 'No'}
+                  <td className="px-5 py-4 text-center">
+                    <span className={cn(
+                      "text-xs font-medium",
+                      pipeline.useCustomBuildCommands ? "text-emerald-500" : "text-muted-foreground"
+                    )}>
+                      {pipeline.useCustomBuildCommands ? 'Yes' : 'No'}
+                    </span>
                   </td>
-                  <td className="px-4 py-5 text-center text-[#5da2c3]">
-                    {pipeline.useCustomDatabaseCommands ? 'Yes' : 'No'}
+                  <td className="px-5 py-4 text-center">
+                    <span className={cn(
+                      "text-xs font-medium",
+                      pipeline.useCustomDatabaseCommands ? "text-emerald-500" : "text-muted-foreground"
+                    )}>
+                      {pipeline.useCustomDatabaseCommands ? 'Yes' : 'No'}
+                    </span>
                   </td>
-                  <td className="px-4 py-5 text-center text-[#5da2c3]">
-                    {pipeline.useCustomPostBuildCommands ? 'Yes' : 'No'}
+                  <td className="px-5 py-4 text-center">
+                    <span className={cn(
+                      "text-xs font-medium",
+                      pipeline.useCustomPostBuildCommands ? "text-emerald-500" : "text-muted-foreground"
+                    )}>
+                      {pipeline.useCustomPostBuildCommands ? 'Yes' : 'No'}
+                    </span>
                   </td>
-                  <td className="px-4 py-5 text-center text-[#5da2c3]">
-                    {pipeline.reloadAdditionalDeployments ? 'Yes' : 'No'}
+                  <td className="px-5 py-4 text-center">
+                    <span className={cn(
+                      "text-xs font-medium",
+                      pipeline.reloadAdditionalDeployments ? "text-emerald-500" : "text-muted-foreground"
+                    )}>
+                      {pipeline.reloadAdditionalDeployments ? 'Yes' : 'No'}
+                    </span>
                   </td>
-                  <td className="px-4 py-5 text-right">
-                    <div className="flex items-center justify-end gap-3 text-[#2fa4c7]">
-                      <Eye size={18} className="cursor-pointer hover:text-[#1f4a76] transition-colors" onClick={() => setSelectedPipelineId(pipeline.id)} />
-                      <Edit size={18} className="cursor-pointer hover:text-[#1f4a76] transition-colors" />
-                      <Trash2 size={18} className="cursor-pointer hover:text-red-600 transition-colors" />
+                  <td className="px-5 py-4">
+                    <div className="flex items-center justify-end gap-1">
+                      <button 
+                        onClick={() => setSelectedPipelineId(pipeline.id)}
+                        className="p-2 rounded-lg hover:bg-muted/50 text-primary transition-colors"
+                      >
+                        <Eye size={16} />
+                      </button>
+                      <button className="p-2 rounded-lg hover:bg-muted/50 text-muted-foreground hover:text-foreground transition-colors">
+                        <Edit size={16} />
+                      </button>
+                      <button className="p-2 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors">
+                        <Trash2 size={16} />
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -400,10 +527,10 @@ export function PipelinesTab({ environmentId }: PipelinesTabProps) {
       </div>
       
       {/* Pagination Footer */}
-      <div className="flex items-center justify-between text-xs text-[#5da2c3] px-2 pt-2">
-        <span className="font-medium cursor-pointer hover:text-[#2fa4c7]">Previous</span>
-        <span>1-1 of 1</span>
-        <span className="font-medium cursor-pointer hover:text-[#2fa4c7]">Next</span>
+      <div className="flex items-center justify-between text-sm px-1">
+        <button className="font-medium text-primary hover:text-primary/80 transition-colors">Previous</button>
+        <span className="text-muted-foreground">1-1 of 1</span>
+        <button className="font-medium text-primary hover:text-primary/80 transition-colors">Next</button>
       </div>
     </div>
   );

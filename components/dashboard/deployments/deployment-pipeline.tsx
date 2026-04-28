@@ -25,61 +25,59 @@ export function DeploymentPipeline({ currentStage }: DeploymentPipelineProps) {
     return 'pending';
   };
 
+  // Calculate progress percentage for the line
+  const getProgressWidth = () => {
+    const stageOrder = ['preparing', 'building', 'transferring', 'finishing'];
+    const currentIndex = stageOrder.indexOf(currentStage);
+    return `${(currentIndex / (stageOrder.length - 1)) * 100}%`;
+  };
+
   return (
-    <div className="py-6">
-      <div className="flex items-center justify-between gap-2">
+    <div className="py-8 px-8 bg-card/30 dark:bg-card/20 rounded-xl border border-border/30">
+      <div className="relative flex items-center justify-between">
+        {/* Background line */}
+        <div className="absolute top-8 left-8 right-8 h-1 bg-border/50 rounded-full z-0" />
+        
+        {/* Progress line */}
+        <div 
+          className="absolute top-8 left-8 h-1 bg-gradient-to-r from-emerald-500 to-primary rounded-full z-0 transition-all duration-500"
+          style={{ width: getProgressWidth() }}
+        />
+
         {stages.map((stage, index) => {
           const Icon = stage.icon;
           const status = getStageStatus(stage.id);
+          const isCompleted = status === 'completed';
+          const isCurrent = status === 'current';
+          const isPending = status === 'pending';
           
           return (
-            <div key={stage.id} className="flex items-center flex-1">
-              {/* Stage Circle */}
-              <div className="flex flex-col items-center flex-1">
-                <div
-                  className={cn(
-                    'w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 shadow-card',
-                    status === 'completed' && 'bg-status-success',
-                    status === 'current' && 'bg-status-running ring-4 ring-status-running/30 ring-offset-2 ring-offset-background',
-                    status === 'pending' && 'bg-muted'
-                  )}
-                >
-                  <Icon
-                    size={28}
-                    className="transition-colors"
-                    style={{
-                      color:
-                        status === 'completed'
-                          ? 'white'
-                          : status === 'current'
-                          ? 'white'
-                          : 'currentColor'
-                    }}
-                  />
-                </div>
+            <div key={stage.id} className="flex flex-col items-center relative z-10">
+              <div
+                className={cn(
+                  'w-16 h-16 rounded-2xl flex items-center justify-center transition-all duration-300 shadow-lg',
+                  isCompleted && 'bg-emerald-500 text-white',
+                  isCurrent && 'bg-primary text-white ring-4 ring-primary/30 scale-110',
+                  isPending && 'bg-muted/80 dark:bg-muted/40 text-muted-foreground'
+                )}
+              >
+                <Icon size={28} />
+              </div>
+              <div className="text-center mt-3">
                 <p
                   className={cn(
-                    'text-sm font-medium mt-2 transition-colors',
-                    status === 'completed' && 'text-status-success',
-                    status === 'current' && 'text-status-running',
-                    status === 'pending' && 'text-muted-foreground'
+                    'text-sm font-semibold transition-colors',
+                    isCompleted && 'text-emerald-500',
+                    isCurrent && 'text-primary',
+                    isPending && 'text-muted-foreground'
                   )}
                 >
                   {stage.label}
                 </p>
+                {isCurrent && (
+                  <span className="block text-xs text-primary/80 mt-0.5 animate-pulse">In Progress</span>
+                )}
               </div>
-
-              {/* Connector Line */}
-              {index < stages.length - 1 && (
-                <div
-                  className={cn(
-                    'h-1 flex-1 mx-2 transition-colors duration-300',
-                    getStageStatus(stages[index + 1].id) === 'pending'
-                      ? 'bg-border'
-                      : 'bg-gradient-to-r from-status-success to-status-running'
-                  )}
-                />
-              )}
             </div>
           );
         })}

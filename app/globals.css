@@ -6,22 +6,22 @@
 :root {
   --background: #0B0F1A;
   --foreground: #F1F3F5;
-  --card: #1A2236;
+  --card: #141B2D;
   --card-foreground: #F1F3F5;
-  --popover: #1A2236;
+  --popover: #141B2D;
   --popover-foreground: #F1F3F5;
   --primary: #3B82F6;
   --primary-foreground: #FFFFFF;
   --secondary: #6366F1;
   --secondary-foreground: #FFFFFF;
-  --muted: #4B5563;
-  --muted-foreground: #A0A7B5;
+  --muted: #1E293B;
+  --muted-foreground: #94A3B8;
   --accent: #3B82F6;
   --accent-foreground: #FFFFFF;
   --destructive: #EF4444;
   --destructive-foreground: #FFFFFF;
-  --border: #2D3748;
-  --input: #1A2236;
+  --border: #1E293B;
+  --input: #141B2D;
   --ring: #3B82F6;
   --chart-1: #3B82F6;
   --chart-2: #6366F1;
@@ -35,7 +35,7 @@
   --sidebar-primary-foreground: #FFFFFF;
   --sidebar-accent: #6366F1;
   --sidebar-accent-foreground: #FFFFFF;
-  --sidebar-border: #2D3748;
+  --sidebar-border: #1E293B;
   --sidebar-ring: #3B82F6;
   /* Status colors */
   --status-success: #10B981;
@@ -48,22 +48,22 @@
 .dark {
   --background: #0B0F1A;
   --foreground: #F1F3F5;
-  --card: #1A2236;
+  --card: #141B2D;
   --card-foreground: #F1F3F5;
-  --popover: #1A2236;
+  --popover: #141B2D;
   --popover-foreground: #F1F3F5;
   --primary: #3B82F6;
   --primary-foreground: #FFFFFF;
   --secondary: #6366F1;
   --secondary-foreground: #FFFFFF;
-  --muted: #4B5563;
-  --muted-foreground: #A0A7B5;
+  --muted: #1E293B;
+  --muted-foreground: #94A3B8;
   --accent: #3B82F6;
   --accent-foreground: #FFFFFF;
   --destructive: #EF4444;
   --destructive-foreground: #FFFFFF;
-  --border: #2D3748;
-  --input: #1A2236;
+  --border: #1E293B;
+  --input: #141B2D;
   --ring: #3B82F6;
   --chart-1: #3B82F6;
   --chart-2: #6366F1;
@@ -76,7 +76,7 @@
   --sidebar-primary-foreground: #FFFFFF;
   --sidebar-accent: #6366F1;
   --sidebar-accent-foreground: #FFFFFF;
-  --sidebar-border: #2D3748;
+  --sidebar-border: #1E293B;
   --sidebar-ring: #3B82F6;
   /* Status colors */
   --status-success: #10B981;
@@ -97,21 +97,21 @@
   --primary-foreground: #FFFFFF;
   --secondary: #4F46E5;
   --secondary-foreground: #FFFFFF;
-  --muted: #E2E8F0;
-  --muted-foreground: #475569;
+  --muted: #F1F5F9;
+  --muted-foreground: #64748B;
   --accent: #2563EB;
   --accent-foreground: #FFFFFF;
   --destructive: #DC2626;
   --destructive-foreground: #FFFFFF;
   --border: #E2E8F0;
-  --input: #F1F5F9;
+  --input: #F8FAFC;
   --ring: #2563EB;
   --chart-1: #2563EB;
   --chart-2: #4F46E5;
   --chart-3: #7C3AED;
   --chart-4: #16A34A;
   --chart-5: #D97706;
-  --sidebar: #F8FAFC;
+  --sidebar: #FFFFFF;
   --sidebar-foreground: #0F172A;
   --sidebar-primary: #2563EB;
   --sidebar-primary-foreground: #FFFFFF;
@@ -244,4 +244,55 @@
   .focus-ring {
     @apply focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 focus:ring-offset-background;
   }
+}
+
+/* Custom Scrollbar Styles */
+:root {
+  --scrollbar-track: #141B2D;
+  --scrollbar-thumb: #3B82F6;
+  --scrollbar-thumb-hover: #60A5FA;
+}
+
+.dark {
+  --scrollbar-track: #141B2D;
+  --scrollbar-thumb: #3B82F6;
+  --scrollbar-thumb-hover: #60A5FA;
+}
+
+.light {
+  --scrollbar-track: #F1F5F9;
+  --scrollbar-thumb: #2563EB;
+  --scrollbar-thumb-hover: #3B82F6;
+}
+
+/* Webkit browsers (Chrome, Safari, newer Edge) */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 5px;
+  border: 2px solid var(--scrollbar-track);
+  transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}
+
+::-webkit-scrollbar-corner {
+  background: var(--scrollbar-track);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
 }
