@@ -33,16 +33,16 @@ type SortField = 'id' | 'subject' | 'status' | 'priority' | 'lastUpdated';
 type SortDirection = 'asc' | 'desc' | null;
 
 const statusColors = {
-  open: 'bg-blue-500/20 text-blue-300 border-blue-500/50',
-  pending: 'bg-amber-500/20 text-amber-300 border-amber-500/50',
-  closed: 'bg-green-500/20 text-green-300 border-green-500/50',
+  open: 'bg-primary/10 text-primary border-primary/20',
+  pending: 'bg-amber-500/10 text-amber-500 border-amber-500/20',
+  closed: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20',
 };
 
 const priorityColors = {
-  low: 'bg-blue-500/20 text-blue-300 border-blue-500/50',
-  medium: 'bg-amber-500/20 text-amber-300 border-amber-500/50',
-  high: 'bg-orange-500/20 text-orange-300 border-orange-500/50',
-  critical: 'bg-red-500/20 text-red-300 border-red-500/50',
+  low: 'bg-muted text-muted-foreground border-border',
+  medium: 'bg-amber-500/10 text-amber-500 border-amber-500/20',
+  high: 'bg-orange-500/10 text-orange-500 border-orange-500/20',
+  critical: 'bg-destructive/10 text-destructive border-destructive/20',
 };
 
 function formatDate(dateString: string): string {
@@ -115,11 +115,11 @@ export function SupportTicketsTable({
   };
 
   return (
-    <Card className="overflow-hidden border-border/50">
+    <Card className="overflow-hidden border-border bg-card">
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-border/50 bg-card/50">
+            <tr className="border-b border-border bg-muted/50">
               <th className="px-6 py-3 text-left">
                 <button
                   onClick={() => handleSort('id')}
@@ -185,7 +185,7 @@ export function SupportTicketsTable({
               sortedTickets.map((ticket) => (
                 <tr
                   key={ticket.id}
-                  className="border-b border-border/30 hover:bg-card/50 transition-colors"
+                  className="border-b border-border hover:bg-muted/30 transition-colors"
                 >
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2">
@@ -260,10 +260,10 @@ export function SupportTicketsTable({
       </div>
 
       {/* Footer with statistics */}
-      <div className="border-t border-border/50 bg-card/30 px-6 py-3 flex items-center justify-between">
+      <div className="border-t border-border bg-muted/30 px-6 py-3 flex items-center justify-between">
         <span className="text-xs text-muted-foreground">
-          Showing <span className="font-semibold text-foreground">{sortedTickets.length}</span> of{' '}
-          <span className="font-semibold text-foreground">{tickets.length}</span> tickets
+          Showing <span className="font-medium text-foreground">{sortedTickets.length}</span> of{' '}
+          <span className="font-medium text-foreground">{tickets.length}</span> tickets
         </span>
       </div>
     </Card>

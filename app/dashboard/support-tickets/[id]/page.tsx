@@ -38,12 +38,11 @@ export default function TicketDetailsPage({ params }: TicketDetailsPageProps) {
 
   const handleAddComment = async (content: string, isInternal: boolean) => {
     // Simulate API call
-    console.log('[v0] Adding comment:', { content, isInternal });
     await new Promise((resolve) => setTimeout(resolve, 500));
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
       <TicketHeader
         ticketId={ticketData.id}
@@ -56,17 +55,23 @@ export default function TicketDetailsPage({ params }: TicketDetailsPageProps) {
       />
 
       {/* Main content with sidebar */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main content - left side */}
         <div className="lg:col-span-2">
           {/* Tabs */}
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full max-w-md grid-cols-2 bg-background/50 border border-border">
-              <TabsTrigger value="comments" className="gap-2">
+            <TabsList className="inline-flex w-auto bg-card border border-border rounded-lg p-1 gap-1">
+              <TabsTrigger 
+                value="comments" 
+                className="gap-2 px-4 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md"
+              >
                 <MessageCircle className="w-4 h-4" />
                 Comments
               </TabsTrigger>
-              <TabsTrigger value="history" className="gap-2">
+              <TabsTrigger 
+                value="history" 
+                className="gap-2 px-4 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md"
+              >
                 <History className="w-4 h-4" />
                 History
               </TabsTrigger>

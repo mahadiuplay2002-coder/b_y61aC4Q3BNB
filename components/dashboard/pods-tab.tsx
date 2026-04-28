@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { Input } from '@/components/ui/input';
-import { Search, ChevronsUpDown, CheckCircle2, Eye } from 'lucide-react';
+import { Search, ChevronsUpDown, CheckCircle2, Eye, Boxes, RefreshCw } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface Pod {
   name: string;
@@ -85,7 +86,7 @@ const mockPods: Pod[] = [
     status: 'Running'
   },
   {
-    name: 'alertmanager-kube-prometheus-stack-1701-alertmanager-0', // second one with different node
+    name: 'alertmanager-kube-prometheus-stack-1701-alertmanager-0',
     node: '1-a1ec8800-cl1n',
     nodeType: 'n2-custom-20-163840',
     ip: '10.36.13.253',
@@ -117,7 +118,7 @@ interface PodsTabProps {
 }
 
 export function PodsTab({ environmentId }: PodsTabProps) {
-  const [pods, setPods] = useState<Pod[]>(mockPods);
+  const [pods] = useState<Pod[]>(mockPods);
   const [searchTerm, setSearchTerm] = useState('');
 
   const filteredPods = pods.filter(pod =>
@@ -126,101 +127,135 @@ export function PodsTab({ environmentId }: PodsTabProps) {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-2">
-        <Search size={16} className="text-muted-foreground" />
-        <Input
-          placeholder="Search pods..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="flex-1"
-        />
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+            <Boxes className="h-5 w-5 text-primary" />
+          </div>
+          <div>
+            <h2 className="text-xl font-semibold text-foreground">Pods</h2>
+            <p className="text-sm text-muted-foreground">Manage and monitor your container pods.</p>
+          </div>
+        </div>
+        <Button variant="outline" size="sm" className="gap-2">
+          <RefreshCw className="h-4 w-4" />
+          Refresh
+        </Button>
       </div>
 
-      <p className="text-sm text-muted-foreground">Pods: Last updated 30 seconds ago</p>
+      {/* Search and Status */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="relative flex-1 max-w-md">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Search pods by name..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-9 bg-card border-border"
+          />
+        </div>
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+          <span>Last updated 30 seconds ago</span>
+        </div>
+      </div>
 
-      <div className="bg-card border-none rounded-none w-full">
-        <div className="overflow-x-auto w-full">
-          <table className="w-full text-left border-collapse">
-            <thead className="bg-[#f0f7f9] border-y border-[#dcecf1]">
-              <tr>
-                <th className="px-4 py-3 text-[10px] font-bold text-[#2e5e7e] uppercase whitespace-nowrap cursor-pointer hover:bg-[#e6f0f4] transition-colors group">
-                  <div className="flex items-center gap-1">
-                    NAME
-                    <ChevronsUpDown className="w-3 h-3 text-[#5da2c3] group-hover:text-[#2e5e7e]" />
+      {/* Table */}
+      <div className="rounded-lg border border-border bg-card overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left">
+            <thead>
+              <tr className="border-b border-border bg-muted/50">
+                <th className="px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wide whitespace-nowrap cursor-pointer hover:text-foreground transition-colors group">
+                  <div className="flex items-center gap-1.5">
+                    Name
+                    <ChevronsUpDown className="w-3.5 h-3.5 opacity-50 group-hover:opacity-100" />
                   </div>
                 </th>
-                <th className="px-4 py-3 text-[10px] font-bold text-[#2e5e7e] uppercase whitespace-nowrap">NODE</th>
-                <th className="px-4 py-3 text-[10px] font-bold text-[#2e5e7e] uppercase whitespace-nowrap cursor-pointer hover:bg-[#e6f0f4] transition-colors group">
-                  <div className="flex items-center gap-1">
-                    NODE TYPE
-                    <ChevronsUpDown className="w-3 h-3 text-[#5da2c3] group-hover:text-[#2e5e7e]" />
+                <th className="px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wide whitespace-nowrap">Node</th>
+                <th className="px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wide whitespace-nowrap cursor-pointer hover:text-foreground transition-colors group">
+                  <div className="flex items-center gap-1.5">
+                    Node Type
+                    <ChevronsUpDown className="w-3.5 h-3.5 opacity-50 group-hover:opacity-100" />
                   </div>
                 </th>
-                <th className="px-4 py-3 text-[10px] font-bold text-[#2e5e7e] uppercase whitespace-nowrap cursor-pointer hover:bg-[#e6f0f4] transition-colors group">
-                  <div className="flex items-center gap-1">
-                    IP
-                    <ChevronsUpDown className="w-3 h-3 text-[#5da2c3] group-hover:text-[#2e5e7e]" />
-                  </div>
-                </th>
-                <th className="px-4 py-3 text-[10px] font-bold text-[#2e5e7e] uppercase whitespace-nowrap">AGE</th>
-                <th className="px-4 py-3 text-[10px] font-bold text-[#2e5e7e] uppercase whitespace-nowrap">CONTAINERS</th>
-                <th className="px-4 py-3 text-[10px] font-bold text-[#2e5e7e] uppercase whitespace-nowrap">CPU</th>
-                <th className="px-4 py-3 text-[10px] font-bold text-[#2e5e7e] uppercase whitespace-nowrap">MEMORY</th>
-                <th className="px-4 py-3 text-[10px] font-bold text-[#2e5e7e] uppercase whitespace-nowrap">RESTARTS</th>
-                <th className="px-4 py-3 text-[10px] font-bold text-[#2e5e7e] uppercase whitespace-nowrap">READY</th>
-                <th className="px-4 py-3 text-[10px] font-bold text-[#2e5e7e] uppercase whitespace-nowrap">STATUS</th>
-                <th className="px-4 py-3 w-10"></th>
+                <th className="px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wide whitespace-nowrap">IP</th>
+                <th className="px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wide whitespace-nowrap">Age</th>
+                <th className="px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wide whitespace-nowrap">Containers</th>
+                <th className="px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wide whitespace-nowrap">CPU</th>
+                <th className="px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wide whitespace-nowrap">Memory</th>
+                <th className="px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wide whitespace-nowrap">Restarts</th>
+                <th className="px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wide whitespace-nowrap">Ready</th>
+                <th className="px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wide whitespace-nowrap">Status</th>
+                <th className="px-4 py-3 w-12"></th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#edf3f6] bg-white">
+            <tbody className="divide-y divide-border">
               {filteredPods.map((pod, idx) => (
-                <tr key={idx} className="hover:bg-[#f6fafb] transition-colors">
-                  <td className="px-4 py-4 whitespace-nowrap">
-                    <span className="text-[13px] font-bold text-[#1f4a76]">{pod.name}</span>
+                <tr key={idx} className="hover:bg-muted/30 transition-colors">
+                  <td className="px-4 py-3.5 whitespace-nowrap">
+                    <span className="text-sm font-medium text-foreground">{pod.name}</span>
                   </td>
-                  <td className="px-4 py-4 whitespace-nowrap">
-                    <span className="text-[13px] font-bold text-[#1f4a76]">{pod.node}</span>
+                  <td className="px-4 py-3.5 whitespace-nowrap">
+                    <span className="text-sm font-medium text-foreground">{pod.node}</span>
                   </td>
-                  <td className="px-4 py-4 whitespace-nowrap">
-                    <span className="text-[13px] text-[#64849c]">{pod.nodeType}</span>
+                  <td className="px-4 py-3.5 whitespace-nowrap">
+                    <span className="text-sm text-muted-foreground font-mono">{pod.nodeType}</span>
                   </td>
-                  <td className="px-4 py-4 whitespace-nowrap">
-                    <span className="text-[13px] text-[#64849c]">{pod.ip}</span>
+                  <td className="px-4 py-3.5 whitespace-nowrap">
+                    <span className="text-sm text-muted-foreground font-mono">{pod.ip}</span>
                   </td>
-                  <td className="px-4 py-4 whitespace-nowrap">
-                    <span className="text-[13px] text-[#64849c]">{pod.age}</span>
+                  <td className="px-4 py-3.5 whitespace-nowrap">
+                    <span className="text-sm text-muted-foreground">{pod.age}</span>
                   </td>
-                  <td className="px-4 py-4 whitespace-nowrap">
-                    <span className="text-[13px] text-[#64849c]">{pod.containers}</span>
+                  <td className="px-4 py-3.5 whitespace-nowrap">
+                    <span className="text-sm text-muted-foreground">{pod.containers}</span>
                   </td>
-                  <td className="px-4 py-4 whitespace-nowrap">
-                    <span className="text-[13px] text-[#64849c]">{pod.cpu}</span>
+                  <td className="px-4 py-3.5 whitespace-nowrap">
+                    <span className="text-sm text-muted-foreground font-mono">{pod.cpu}</span>
                   </td>
-                  <td className="px-4 py-4 whitespace-nowrap">
-                    <span className="text-[13px] text-[#64849c]">{pod.memory}</span>
+                  <td className="px-4 py-3.5 whitespace-nowrap">
+                    <span className="text-sm text-muted-foreground font-mono">{pod.memory}</span>
                   </td>
-                  <td className="px-4 py-4 whitespace-nowrap">
-                    <span className="text-[13px] text-[#64849c]">{pod.restarts}</span>
+                  <td className="px-4 py-3.5 whitespace-nowrap">
+                    <span className={`text-sm font-medium ${pod.restarts > 0 ? 'text-amber-500' : 'text-muted-foreground'}`}>
+                      {pod.restarts}
+                    </span>
                   </td>
-                  <td className="px-4 py-4 whitespace-nowrap">
+                  <td className="px-4 py-3.5 whitespace-nowrap">
                     {pod.ready ? (
                       <CheckCircle2 className="w-4 h-4 text-emerald-500" />
                     ) : (
-                      <span className="text-[13px] text-[#64849c]">No</span>
+                      <span className="text-sm text-muted-foreground">No</span>
                     )}
                   </td>
-                  <td className="px-4 py-4 whitespace-nowrap">
-                    <span className="text-[13px] text-[#64849c]">{pod.status}</span>
+                  <td className="px-4 py-3.5 whitespace-nowrap">
+                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                      pod.status === 'Running' 
+                        ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20' 
+                        : 'bg-amber-500/10 text-amber-500 border border-amber-500/20'
+                    }`}>
+                      {pod.status}
+                    </span>
                   </td>
-                  <td className="px-4 py-4 whitespace-nowrap text-right">
-                    <button className="text-[#3b93b8] hover:text-[#1f4a76] transition-colors">
+                  <td className="px-4 py-3.5 whitespace-nowrap text-right">
+                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground">
                       <Eye className="w-4 h-4" />
-                    </button>
+                    </Button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
+        </div>
+        
+        {/* Footer */}
+        <div className="border-t border-border bg-muted/30 px-4 py-3 flex items-center justify-between">
+          <span className="text-xs text-muted-foreground">
+            Showing <span className="font-medium text-foreground">{filteredPods.length}</span> of{' '}
+            <span className="font-medium text-foreground">{pods.length}</span> pods
+          </span>
         </div>
       </div>
     </div>

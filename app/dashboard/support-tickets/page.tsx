@@ -142,96 +142,97 @@ export default function SupportTicketsPage() {
   };
 
   return (
-    <div className="flex flex-col gap-8 lg:gap-10">
-      {/* Page Header - Jira Style */}
-      <div className="flex items-center justify-between">
-        <h1 className="text-4xl font-bold tracking-tight">Support Tickets</h1>
-        <Button className="gap-2 bg-accent hover:bg-accent/90 text-white font-medium">
+    <div className="flex flex-col gap-8">
+      {/* Page Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="space-y-1">
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">Support Tickets</h1>
+          <p className="text-sm text-muted-foreground">Manage and track customer support requests.</p>
+        </div>
+        <Button className="gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-medium w-fit">
           <Plus className="h-4 w-4" />
           Create Ticket
         </Button>
       </div>
 
-      {/* Filter Bar - Jira Style */}
-      <Card className="border-border p-6 bg-card shadow-card">
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-medium text-muted-foreground">Priority</span>
-            <Button variant="outline" size="sm" className="text-xs h-7">Select option</Button>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-medium text-muted-foreground">Department</span>
-            <Button variant="outline" size="sm" className="text-xs h-7">Select option</Button>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-medium text-muted-foreground">Status</span>
-            <div className="flex gap-1 flex-wrap">
-              {['Pending', 'WaitingOnCustomer', 'Resolved', 'Closed'].map((status) => (
-                <Button
-                  key={status}
-                  size="sm"
-                  className="text-xs h-7 bg-emerald-500/20 text-emerald-700 hover:bg-emerald-500/30 border border-emerald-500/30"
-                >
-                  {status}
-                </Button>
-              ))}
+      {/* Summary Stats */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <Card className="border-border p-5 bg-card">
+          <div className="flex items-center gap-4">
+            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
+              <div className="h-3 w-3 rounded-full bg-primary" />
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Open</span>
+              <span className="text-2xl font-bold text-foreground">{ticketCounts.open}</span>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-medium text-muted-foreground">Company</span>
-            <Button
-              size="sm"
-              className="text-xs h-7 bg-emerald-500/20 text-emerald-700 hover:bg-emerald-500/30 border border-emerald-500/30"
-            >
-              Test company
+        </Card>
+        <Card className="border-border p-5 bg-card">
+          <div className="flex items-center gap-4">
+            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-amber-500/10">
+              <div className="h-3 w-3 rounded-full bg-amber-500" />
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Pending</span>
+              <span className="text-2xl font-bold text-foreground">{ticketCounts.pending}</span>
+            </div>
+          </div>
+        </Card>
+        <Card className="border-border p-5 bg-card">
+          <div className="flex items-center gap-4">
+            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-emerald-500/10">
+              <div className="h-3 w-3 rounded-full bg-emerald-500" />
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Closed</span>
+              <span className="text-2xl font-bold text-foreground">{ticketCounts.closed}</span>
+            </div>
+          </div>
+        </Card>
+      </div>
+
+      {/* Filter Bar */}
+      <Card className="border-border p-5 bg-card">
+        <div className="flex flex-wrap items-center gap-3">
+          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Filters:</span>
+          <div className="flex flex-wrap items-center gap-2">
+            <Button variant="outline" size="sm" className="text-xs h-8 gap-1.5 border-border">
+              Priority
+              <ChevronDown className="h-3 w-3" />
+            </Button>
+            <Button variant="outline" size="sm" className="text-xs h-8 gap-1.5 border-border">
+              Department
+              <ChevronDown className="h-3 w-3" />
+            </Button>
+            <Button variant="outline" size="sm" className="text-xs h-8 gap-1.5 border-border">
+              Status
+              <ChevronDown className="h-3 w-3" />
+            </Button>
+            <Button variant="outline" size="sm" className="text-xs h-8 gap-1.5 border-border">
+              Company
+              <ChevronDown className="h-3 w-3" />
+            </Button>
+            <Button variant="outline" size="sm" className="text-xs h-8 gap-1.5 border-border">
+              Requester
+              <ChevronDown className="h-3 w-3" />
             </Button>
           </div>
+          <div className="flex-1" />
           <div className="flex items-center gap-2">
-            <span className="text-xs font-medium text-muted-foreground">Agency</span>
-            <Button variant="outline" size="sm" className="text-xs h-7">Select option</Button>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-medium text-muted-foreground">Requester</span>
-            <Button variant="outline" size="sm" className="text-xs h-7">Select option</Button>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-medium text-muted-foreground">Tags</span>
-            <Button variant="outline" size="sm" className="text-xs h-7">Select option</Button>
+            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+              Active filters: 2
+            </span>
+            <Button variant="ghost" size="sm" className="text-xs h-8 text-muted-foreground hover:text-foreground">
+              Clear all
+            </Button>
           </div>
         </div>
       </Card>
 
-      {/* Search and Controls */}
+      {/* Search */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <TicketSearch value={searchQuery} onChange={setSearchQuery} />
-        <div className="flex items-center gap-3">
-          <span className="text-sm font-medium text-muted-foreground">Display:</span>
-          <Button variant="outline" size="sm" className="text-sm h-9 bg-primary text-primary-foreground border-primary hover:bg-primary/90">
-            2 <ChevronDown className="h-4 w-4 ml-2" />
-          </Button>
-        </div>
-      </div>
-
-      {/* Summary Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Card className="border-border p-6 bg-card shadow-card">
-          <div className="flex flex-col gap-2">
-            <span className="text-sm font-medium text-muted-foreground">Total Open</span>
-            <span className="text-3xl font-bold text-primary">{ticketCounts.open}</span>
-          </div>
-        </Card>
-        <Card className="border-border p-6 bg-card shadow-card">
-          <div className="flex flex-col gap-2">
-            <span className="text-sm font-medium text-muted-foreground">Pending</span>
-            <span className="text-3xl font-bold text-status-warning">{ticketCounts.pending}</span>
-          </div>
-        </Card>
-        <Card className="border-border p-6 bg-card shadow-card">
-          <div className="flex flex-col gap-2">
-            <span className="text-sm font-medium text-muted-foreground">Closed</span>
-            <span className="text-3xl font-bold text-status-success">{ticketCounts.closed}</span>
-          </div>
-        </Card>
       </div>
 
       {/* Tickets Table */}

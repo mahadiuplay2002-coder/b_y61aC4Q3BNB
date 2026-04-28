@@ -30,16 +30,16 @@ export function TicketHeader({
   const [editedTitle, setEditedTitle] = useState(title);
 
   const statusLabels = {
-    open: { label: 'Open', color: 'bg-blue-500/10 text-blue-400 border-blue-500/20' },
-    pending: { label: 'Pending', color: 'bg-amber-500/10 text-amber-400 border-amber-500/20' },
-    closed: { label: 'Closed', color: 'bg-green-500/10 text-green-400 border-green-500/20' },
+    open: { label: 'Open', color: 'bg-primary/10 text-primary border-primary/20' },
+    pending: { label: 'Pending', color: 'bg-amber-500/10 text-amber-500 border-amber-500/20' },
+    closed: { label: 'Closed', color: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' },
   };
 
   const priorityColors = {
-    low: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
-    medium: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20',
-    high: 'bg-orange-500/10 text-orange-400 border-orange-500/20',
-    critical: 'bg-red-500/10 text-red-400 border-red-500/20',
+    low: 'bg-muted text-muted-foreground border-border',
+    medium: 'bg-amber-500/10 text-amber-500 border-amber-500/20',
+    high: 'bg-orange-500/10 text-orange-500 border-orange-500/20',
+    critical: 'bg-destructive/10 text-destructive border-destructive/20',
   };
 
   const formatDate = (date: string) => {
@@ -60,10 +60,10 @@ export function TicketHeader({
       </div>
 
       {/* Header Card */}
-      <Card className="border-border bg-card">
+      <Card className="border-border bg-card overflow-hidden">
         <div className="p-6">
           {/* Title section */}
-          <div className="mb-6">
+          <div className="mb-8">
             {isEditing ? (
               <div className="flex gap-2 items-start">
                 <input
@@ -107,7 +107,7 @@ export function TicketHeader({
           </div>
 
           {/* Metadata grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 pb-6 border-b border-border">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8 pb-8 border-b border-border">
             {/* Ticket ID */}
             <div>
               <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Ticket ID</p>

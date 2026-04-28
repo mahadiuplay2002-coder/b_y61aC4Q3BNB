@@ -1,8 +1,8 @@
 'use client';
 
-import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Bell, AlertTriangle, Wrench, Activity, Rocket, Mail } from 'lucide-react';
 
 interface NotificationsTabProps {
   environmentId?: string;
@@ -12,94 +12,136 @@ export function NotificationsTab({ environmentId }: NotificationsTabProps) {
   const notificationSettings = [
     { 
       name: 'Emergency Alerts', 
-      description: 'Receive emergency alerts in regards to security and/or availability of the environments you are subscribed to.',
-      enabled: true 
+      description: 'Receive emergency alerts regarding security and availability of your subscribed environments.',
+      enabled: true,
+      icon: AlertTriangle,
+      iconColor: 'text-destructive'
     },
     { 
-      name: 'Maintenance window', 
-      description: 'Receive notifications when a maintenance window is scheduled/created/completed.',
-      enabled: true 
+      name: 'Maintenance Window', 
+      description: 'Get notified when maintenance windows are scheduled, created, or completed.',
+      enabled: true,
+      icon: Wrench,
+      iconColor: 'text-amber-500'
     },
     { 
       name: 'Monitoring Alerts', 
-      description: 'Receive alerts when monitored services is down.',
-      enabled: true 
+      description: 'Receive alerts when monitored services experience downtime.',
+      enabled: true,
+      icon: Activity,
+      iconColor: 'text-primary'
     },
     { 
       name: 'Deployment Alerts', 
-      description: 'Receive notifications on deployment completion or failure.',
-      enabled: true 
+      description: 'Get notified on deployment completion or failure events.',
+      enabled: true,
+      icon: Rocket,
+      iconColor: 'text-emerald-500'
     },
     { 
       name: 'Newsletters', 
-      description: 'Receive notifications around new features, functionalities and special offers.',
-      enabled: true 
+      description: 'Stay updated with new features, functionalities, and special offers.',
+      enabled: true,
+      icon: Mail,
+      iconColor: 'text-secondary'
     }
   ];
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-[22px] font-medium text-[#1f4a76] mb-1">Notifications</h2>
-        <p className="text-[13px] text-[#2e5e7e]">Update your notifications settings.</p>
-      </div>
-
-      <div className="space-y-0">
-        {notificationSettings.map((setting, idx) => (
-          <div key={idx} className="flex gap-4 py-5 border-b border-[#f0f8fa] last:border-none items-start">
-            <Checkbox 
-              defaultChecked={setting.enabled} 
-              className="mt-1 border-[#ff6b2a] data-[state=checked]:bg-[#ff6b2a] data-[state=checked]:text-white shadow-none h-[18px] w-[18px] rounded-[3px]"
-            />
-            <div className="flex flex-col flex-1">
-              <span className="text-[13px] font-medium text-[#1f4a76] -mb-0.5">{setting.name}</span>
-              <span className="text-[13px] text-[#2e5e7e] leading-relaxed">{setting.description}</span>
-            </div>
+    <div className="space-y-8">
+      {/* Header */}
+      <div className="space-y-1">
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+            <Bell className="h-5 w-5 text-primary" />
           </div>
-        ))}
-      </div>
-
-      {/* Default Subscriptions Section */}
-      <div className="pt-2 border-t border-[#f0f8fa]">
-        <h3 className="text-[16px] font-medium text-[#1f4a76] mb-2 mt-4">Ticket Default Subscriptions</h3>
-        <p className="text-[13px] text-[#2e5e7e] leading-relaxed mb-4">
-          Select which companies' tickets you would like to be subscribed to automatically. This setting can be overridden on a per ticket basis using the subscribers section on the ticket page.
-          <br /><br />
-          You will always be subscribed to tickets you have raised, regardless of selections below.
-        </p>
-
-        <div className="space-y-4">
-          <div className="flex flex-col gap-2">
-            <span className="font-bold text-[#1f4a76] text-[13px]">Your Company:</span>
-            <div className="flex items-center gap-2">
-              <Checkbox 
-                defaultChecked 
-                className="border-[#ff6b2a] data-[state=checked]:bg-[#ff6b2a] data-[state=checked]:text-white shadow-none h-4 w-4 rounded-[3px]"
-              />
-              <span className="text-[13px] text-[#1f4a76]">Example Agency</span>
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-2 pt-2">
-            <span className="text-[#1f4a76] text-[13px]">Inherited companies:</span>
-            <button className="text-left text-[11px] underline text-[#2e5e7e] font-medium w-fit hover:text-[#1f4a76]">
-              Select / Unselect All
-            </button>
-            <div className="flex items-center gap-2 mt-1 ml-4">
-              <Checkbox 
-                defaultChecked 
-                className="border-[#ff6b2a] data-[state=checked]:bg-[#ff6b2a] data-[state=checked]:text-white shadow-none h-4 w-4 rounded-[3px]"
-              />
-              <span className="text-[13px] text-[#1f4a76]">Example Company</span>
-            </div>
+          <div>
+            <h2 className="text-xl font-semibold text-foreground">Notifications</h2>
+            <p className="text-sm text-muted-foreground">Manage how you receive alerts and updates.</p>
           </div>
         </div>
       </div>
 
+      {/* Notification Settings */}
+      <div className="space-y-1 rounded-lg border border-border bg-card overflow-hidden">
+        {notificationSettings.map((setting, idx) => {
+          const Icon = setting.icon;
+          return (
+            <div 
+              key={idx} 
+              className="flex items-start gap-4 p-5 border-b border-border last:border-b-0 hover:bg-muted/30 transition-colors"
+            >
+              <Checkbox 
+                defaultChecked={setting.enabled} 
+                className="mt-0.5 h-5 w-5 rounded border-border data-[state=checked]:bg-primary data-[state=checked]:border-primary data-[state=checked]:text-primary-foreground"
+              />
+              <div className="flex items-start gap-3 flex-1 min-w-0">
+                <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-muted ${setting.iconColor}`}>
+                  <Icon className="h-4 w-4" />
+                </div>
+                <div className="flex flex-col gap-0.5 min-w-0">
+                  <span className="text-sm font-medium text-foreground">{setting.name}</span>
+                  <span className="text-sm text-muted-foreground leading-relaxed">{setting.description}</span>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Default Subscriptions Section */}
+      <div className="space-y-5">
+        <div className="space-y-1">
+          <h3 className="text-base font-semibold text-foreground">Ticket Default Subscriptions</h3>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            Select which companies&apos; tickets you want to be subscribed to automatically. 
+            This can be overridden per ticket using the subscribers section.
+          </p>
+        </div>
+
+        <div className="rounded-lg border border-border bg-card p-5 space-y-5">
+          {/* Your Company */}
+          <div className="space-y-3">
+            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Your Company</span>
+            <label className="flex items-center gap-3 cursor-pointer group">
+              <Checkbox 
+                defaultChecked 
+                className="h-5 w-5 rounded border-border data-[state=checked]:bg-primary data-[state=checked]:border-primary data-[state=checked]:text-primary-foreground"
+              />
+              <span className="text-sm text-foreground group-hover:text-primary transition-colors">Example Agency</span>
+            </label>
+          </div>
+
+          {/* Divider */}
+          <div className="border-t border-border" />
+
+          {/* Inherited Companies */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Inherited Companies</span>
+              <button className="text-xs font-medium text-primary hover:text-primary/80 transition-colors">
+                Select / Unselect All
+              </button>
+            </div>
+            <label className="flex items-center gap-3 cursor-pointer group pl-1">
+              <Checkbox 
+                defaultChecked 
+                className="h-5 w-5 rounded border-border data-[state=checked]:bg-primary data-[state=checked]:border-primary data-[state=checked]:text-primary-foreground"
+              />
+              <span className="text-sm text-foreground group-hover:text-primary transition-colors">Example Company</span>
+            </label>
+          </div>
+        </div>
+
+        <p className="text-xs text-muted-foreground">
+          You will always be subscribed to tickets you have raised, regardless of selections above.
+        </p>
+      </div>
+
       {/* Form Action */}
-      <div className="bg-[#f8fcfd] -mx-6 -mb-6 p-4 mt-6 border-t border-[#dcecf1] rounded-b-lg flex justify-end">
-        <Button className="bg-[#ff6b2a] hover:bg-[#e95a1c] text-white font-medium px-8 h-9 rounded shadow-sm border-none">
-          Save
+      <div className="flex justify-end pt-2">
+        <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-medium px-6">
+          Save Changes
         </Button>
       </div>
     </div>
