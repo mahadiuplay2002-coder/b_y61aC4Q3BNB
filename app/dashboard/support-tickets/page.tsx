@@ -1,12 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { Plus, ChevronDown } from 'lucide-react';
+import { Plus, ChevronDown, ChevronUp, Filter, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { TicketSearch } from '@/components/dashboard/ticket-search';
 import { TicketFilters, type TicketStatus, type TicketPriority } from '@/components/dashboard/ticket-filters';
 import { SupportTicketsTable, type SupportTicket } from '@/components/dashboard/support-tickets-table';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 
 // Mock data for demonstration
 const mockTickets: SupportTicket[] = [
@@ -124,6 +125,8 @@ export default function SupportTicketsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedStatus, setSelectedStatus] = useState<TicketStatus>(null);
   const [selectedPriority, setSelectedPriority] = useState<TicketPriority>(null);
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const activeFilterCount = 2; // This would be dynamic in a real app
 
   // Filter tickets by search query
   const searchedTickets = mockTickets.filter((ticket) => {
@@ -192,43 +195,93 @@ export default function SupportTicketsPage() {
         </Card>
       </div>
 
-      {/* Filter Bar */}
-      <Card className="border-border p-5 bg-card">
-        <div className="flex flex-wrap items-center gap-3">
-          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Filters:</span>
-          <div className="flex flex-wrap items-center gap-2">
-            <Button variant="outline" size="sm" className="text-xs h-8 gap-1.5 border-border">
-              Priority
-              <ChevronDown className="h-3 w-3" />
-            </Button>
-            <Button variant="outline" size="sm" className="text-xs h-8 gap-1.5 border-border">
-              Department
-              <ChevronDown className="h-3 w-3" />
-            </Button>
-            <Button variant="outline" size="sm" className="text-xs h-8 gap-1.5 border-border">
-              Status
-              <ChevronDown className="h-3 w-3" />
-            </Button>
-            <Button variant="outline" size="sm" className="text-xs h-8 gap-1.5 border-border">
-              Company
-              <ChevronDown className="h-3 w-3" />
-            </Button>
-            <Button variant="outline" size="sm" className="text-xs h-8 gap-1.5 border-border">
-              Requester
-              <ChevronDown className="h-3 w-3" />
-            </Button>
-          </div>
-          <div className="flex-1" />
-          <div className="flex items-center gap-2">
-            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
-              Active filters: 2
-            </span>
-            <Button variant="ghost" size="sm" className="text-xs h-8 text-muted-foreground hover:text-foreground">
-              Clear all
-            </Button>
-          </div>
-        </div>
-      </Card>
+      {/* Collapsible Filter Bar */}
+      <Collapsible open={filtersOpen} onOpenChange={setFiltersOpen}>
+        <Card className="border-border bg-card overflow-hidden">
+          {/* Filter Header - Always Visible */}
+          <CollapsibleTrigger asChild>
+            <button className="w-full flex items-center justify-between p-4 hover:bg-muted/30 transition-colors">
+              <div className="flex items-center gap-3">
+                <div className="flex h-8 w-8 items-center justify-center rounded-md bg-muted">
+                  <Filter className="h-4 w-4 text-muted-foreground" />
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="text-sm font-medium text-foreground">Filters</span>
+                  {activeFilterCount > 0 && (
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary">
+                      {activeFilterCount} active
+                    </span>
+                  )}
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                {activeFilterCount > 0 && (
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="text-xs h-7 text-muted-foreground hover:text-foreground"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      // Clear filters logic here
+                    }}
+                  >
+                    <X className="h-3 w-3 mr-1" />
+                    Clear all
+                  </Button>
+                )}
+                {filtersOpen ? (
+                  <ChevronUp className="h-4 w-4 text-muted-foreground" />
+                ) : (
+                  <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                )}
+              </div>
+            </button>
+          </CollapsibleTrigger>
+
+          {/* Expandable Filter Content */}
+          <CollapsibleContent>
+            <div className="border-t border-border p-4 bg-muted/20">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+                <div className="space-y-2">
+                  <label className="text-xs font-medium text-muted-foreground">Priority</label>
+                  <Button variant="outline" size="sm" className="w-full justify-between text-xs h-9 border-border">
+                    All priorities
+                    <ChevronDown className="h-3 w-3 ml-2" />
+                  </Button>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-medium text-muted-foreground">Department</label>
+                  <Button variant="outline" size="sm" className="w-full justify-between text-xs h-9 border-border">
+                    All departments
+                    <ChevronDown className="h-3 w-3 ml-2" />
+                  </Button>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-medium text-muted-foreground">Status</label>
+                  <Button variant="outline" size="sm" className="w-full justify-between text-xs h-9 border-border bg-primary/5 border-primary/30 text-foreground">
+                    Open, Pending
+                    <ChevronDown className="h-3 w-3 ml-2" />
+                  </Button>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-medium text-muted-foreground">Company</label>
+                  <Button variant="outline" size="sm" className="w-full justify-between text-xs h-9 border-border bg-primary/5 border-primary/30 text-foreground">
+                    Test Company
+                    <ChevronDown className="h-3 w-3 ml-2" />
+                  </Button>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-medium text-muted-foreground">Requester</label>
+                  <Button variant="outline" size="sm" className="w-full justify-between text-xs h-9 border-border">
+                    All requesters
+                    <ChevronDown className="h-3 w-3 ml-2" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </CollapsibleContent>
+        </Card>
+      </Collapsible>
 
       {/* Search */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">

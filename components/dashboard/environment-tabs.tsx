@@ -25,65 +25,71 @@ interface EnvironmentTabsProps {
 export function EnvironmentTabs({ environmentId, environmentName }: EnvironmentTabsProps) {
   const [activeTab, setActiveTab] = useState('general');
 
-  const tabTriggerClass = "flex items-center justify-center gap-2 text-xs sm:text-sm py-2.5 px-3 min-w-[44px] data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md transition-colors";
+  const tabTriggerClass = "flex items-center gap-2 text-sm py-2.5 px-4 whitespace-nowrap rounded-md transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=inactive]:text-muted-foreground data-[state=inactive]:hover:text-foreground data-[state=inactive]:hover:bg-muted/50";
 
   return (
     <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-      {/* Fixed height TabsList to prevent layout shift */}
-      <TabsList className="w-full flex flex-wrap bg-card border border-border rounded-lg p-1.5 h-auto gap-1">
-        <TabsTrigger value="general" className={tabTriggerClass}>
-          <Server size={16} className="shrink-0" />
-          <span className="hidden lg:inline">General</span>
-        </TabsTrigger>
-        <TabsTrigger value="pods" className={tabTriggerClass}>
-          <Boxes size={16} className="shrink-0" />
-          <span className="hidden lg:inline">Pods</span>
-        </TabsTrigger>
-        <TabsTrigger value="nodes" className={tabTriggerClass}>
-          <HardDrive size={16} className="shrink-0" />
-          <span className="hidden lg:inline">Nodes</span>
-        </TabsTrigger>
-        <TabsTrigger value="deployments" className={tabTriggerClass}>
-          <GitBranch size={16} className="shrink-0" />
-          <span className="hidden lg:inline">Deploys</span>
-        </TabsTrigger>
-        <TabsTrigger value="pipelines" className={tabTriggerClass}>
-          <Radio size={16} className="shrink-0" />
-          <span className="hidden lg:inline">Pipelines</span>
-        </TabsTrigger>
-        <TabsTrigger value="emails" className={tabTriggerClass}>
-          <Mail size={16} className="shrink-0" />
-          <span className="hidden lg:inline">Emails</span>
-        </TabsTrigger>
-        <TabsTrigger value="cache-warmer" className={tabTriggerClass}>
-          <Zap size={16} className="shrink-0" />
-          <span className="hidden lg:inline whitespace-nowrap">Cache Warmer</span>
-        </TabsTrigger>
-        <TabsTrigger value="actions" className={tabTriggerClass}>
-          <MoreHorizontal size={16} className="shrink-0" />
-          <span className="hidden lg:inline">Actions</span>
-        </TabsTrigger>
-        <TabsTrigger value="diagnostics" className={tabTriggerClass}>
-          <BarChart3 size={16} className="shrink-0" />
-          <span className="hidden lg:inline">Diagnostics</span>
-        </TabsTrigger>
-        <TabsTrigger value="autoscaler" className={tabTriggerClass}>
-          <Activity size={16} className="shrink-0" />
-          <span className="hidden lg:inline">Autoscaler</span>
-        </TabsTrigger>
-        <TabsTrigger value="monitors" className={tabTriggerClass}>
-          <BarChart3 size={16} className="shrink-0" />
-          <span className="hidden lg:inline">Monitors</span>
-        </TabsTrigger>
-        <TabsTrigger value="quick-actions" className={tabTriggerClass}>
-          <Rocket size={16} className="shrink-0" />
-          <span className="hidden lg:inline whitespace-nowrap">Quick Acts</span>
-        </TabsTrigger>
-        <TabsTrigger value="firewall" className={tabTriggerClass}>
-          <Shield size={16} className="shrink-0" />
-          <span className="hidden lg:inline">Firewall</span>
-        </TabsTrigger>
-      </TabsList>
+      {/* Scrollable TabsList for better organization */}
+      <div className="relative">
+        <div className="overflow-x-auto scrollbar-hide -mx-1 px-1">
+          <TabsList className="inline-flex w-max bg-card border border-border rounded-lg p-1.5 gap-1">
+            <TabsTrigger value="general" className={tabTriggerClass}>
+              <Server size={16} className="shrink-0" />
+              <span>General</span>
+            </TabsTrigger>
+            <TabsTrigger value="pods" className={tabTriggerClass}>
+              <Boxes size={16} className="shrink-0" />
+              <span>Pods</span>
+            </TabsTrigger>
+            <TabsTrigger value="nodes" className={tabTriggerClass}>
+              <HardDrive size={16} className="shrink-0" />
+              <span>Nodes</span>
+            </TabsTrigger>
+            <TabsTrigger value="deployments" className={tabTriggerClass}>
+              <GitBranch size={16} className="shrink-0" />
+              <span>Deploys</span>
+            </TabsTrigger>
+            <TabsTrigger value="pipelines" className={tabTriggerClass}>
+              <Radio size={16} className="shrink-0" />
+              <span>Pipelines</span>
+            </TabsTrigger>
+            <TabsTrigger value="emails" className={tabTriggerClass}>
+              <Mail size={16} className="shrink-0" />
+              <span>Emails</span>
+            </TabsTrigger>
+            <TabsTrigger value="cache-warmer" className={tabTriggerClass}>
+              <Zap size={16} className="shrink-0" />
+              <span>Cache</span>
+            </TabsTrigger>
+            <TabsTrigger value="actions" className={tabTriggerClass}>
+              <MoreHorizontal size={16} className="shrink-0" />
+              <span>Actions</span>
+            </TabsTrigger>
+            <TabsTrigger value="diagnostics" className={tabTriggerClass}>
+              <BarChart3 size={16} className="shrink-0" />
+              <span>Diagnostics</span>
+            </TabsTrigger>
+            <TabsTrigger value="autoscaler" className={tabTriggerClass}>
+              <Activity size={16} className="shrink-0" />
+              <span>Autoscaler</span>
+            </TabsTrigger>
+            <TabsTrigger value="monitors" className={tabTriggerClass}>
+              <BarChart3 size={16} className="shrink-0" />
+              <span>Monitors</span>
+            </TabsTrigger>
+            <TabsTrigger value="quick-actions" className={tabTriggerClass}>
+              <Rocket size={16} className="shrink-0" />
+              <span>Quick Acts</span>
+            </TabsTrigger>
+            <TabsTrigger value="firewall" className={tabTriggerClass}>
+              <Shield size={16} className="shrink-0" />
+              <span>Firewall</span>
+            </TabsTrigger>
+          </TabsList>
+        </div>
+        {/* Fade indicators for scroll */}
+        <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-background to-transparent pointer-events-none rounded-r-lg" />
+      </div>
 
       {/* Fixed min-height container to prevent content shift */}
       <div className="mt-6 min-h-[400px]">
